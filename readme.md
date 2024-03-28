@@ -25,7 +25,7 @@ After reading the data, the program performs the following analyses:
 ## How to Use
 
 - Prepare a CSV file with employee data following the specified format.
-- Run the program using the command: `java -jar analyze-employees.jar [filename.csv]`. If no filename is provided, the program will use the default file `employees.csv`.
+- Run the program using the command: `java -jar analyze-employees.jar [filename.csv]`. If no filename is provided, the program will use the default file `data.csv`.
 - View the analysis results printed in the console.
 
 
