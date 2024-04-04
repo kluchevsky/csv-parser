@@ -7,10 +7,11 @@ import org.staffanalyzer.service.impl.AnalyzeServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AnalyzeServiceTest {
 
@@ -37,7 +38,7 @@ class AnalyzeServiceTest {
         service.buildEmployeesMaps(employees);
 
         // Act
-        String result = service.analyzeSalary(1);
+        String result = service.analyzeSalary(1).get();
 
         // Assert
         assertNotNull(result);
@@ -60,7 +61,7 @@ class AnalyzeServiceTest {
         service.buildEmployeesMaps(employees);
 
         // Act
-        String result = service.analyzeSalary(1);
+        String result = service.analyzeSalary(1).get();
 
         // Assert
         assertNotNull(result);
@@ -83,10 +84,10 @@ class AnalyzeServiceTest {
         service.buildEmployeesMaps(employees);
 
         // Act
-        String result = service.analyzeSalary(1);
+        Optional<String> result = service.analyzeSalary(1);
 
         // Assert
-        assertNull(result);
+        assertTrue(result.isEmpty());
     }
 
     /**

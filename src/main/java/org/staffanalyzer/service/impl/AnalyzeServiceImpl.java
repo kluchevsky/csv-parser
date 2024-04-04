@@ -37,7 +37,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
                 .collect(Collectors.groupingBy(Employee::managerId));
     }
 
-    public String analyzeSalary(Integer id) {
+    public Optional<String> analyzeSalary(Integer id) {
         Employee manager = employeesMap.get(id);
         List<Employee> employees = subordinatesMap.get(id);
         double managerSalary = manager.salary();
@@ -46,14 +46,14 @@ public class AnalyzeServiceImpl implements AnalyzeService {
         double upperBound = averageSubordinatesSalary * UPPER_BOUND_MULTIPLIER;
 
         if (managerSalary < lowerBound) {
-            return String.format(SALARY_LESS_TEMPLATE,
-                    manager.firstName(), manager.lastName(), lowerBound - managerSalary);
+            return Optional.of(String.format(SALARY_LESS_TEMPLATE,
+                    manager.firstName(), manager.lastName(), lowerBound - managerSalary));
         } else if (managerSalary > upperBound) {
-            return String.format(SALARY_MORE_TEMPLATE,
-                    manager.firstName(), manager.lastName(), managerSalary - upperBound);
+            return Optional.of(String.format(SALARY_MORE_TEMPLATE,
+                    manager.firstName(), manager.lastName(), managerSalary - upperBound));
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public void analyzeReportingLines(List<Employee> employees) {
@@ -79,16 +79,11 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     }
 
     private void analyzeSalaries() {
-        AnalyzeServiceImpl.subordinatesMap.forEach((k, v) -> {
-            String result = analyzeSalary(k);
-            if (result != null) {
-                System.out.println(result);
-            }
-        });
+        subordinatesMap.forEach((k, v) -> analyzeSalary(k).ifPresent(System.out::println));
     }
 
     private int findManager(int id) {
-        return Optional.ofNullable(AnalyzeServiceImpl.employeesMap.get(id)).map(Employee::managerId).orElse(-1);
+        return Optional.ofNullable(employeesMap.get(id)).map(Employee::managerId).orElse(-1);
     }
 
     private double calculateAverageSubordinatesSalary(List<Employee> employees) {
