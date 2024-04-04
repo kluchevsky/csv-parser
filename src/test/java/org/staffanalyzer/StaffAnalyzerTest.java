@@ -35,7 +35,7 @@ public class StaffAnalyzerTest {
     @Test
     public void testMain_WithDataFile() {
         String filename = Objects.requireNonNull(getClass().getResource("/data.csv")).getFile();
-        StaffAnalyzer.main(new String[] {filename});
+        StaffAnalyzer.main(new String[]{filename});
 
         assertEquals("Martin Chekov earns 15000,00 less than it should.", outputStreamCaptor.toString().trim());
     }
@@ -49,7 +49,7 @@ public class StaffAnalyzerTest {
     @Test
     public void testMain_LongReportingLine() {
         String filename = Objects.requireNonNull(getClass().getResource("/long_reporting_line.csv")).getFile();
-        StaffAnalyzer.main(new String[] {filename});
+        StaffAnalyzer.main(new String[]{filename});
 
         assertEquals("James Wilson has a reporting line that is 1 too long.", outputStreamCaptor.toString().trim());
     }

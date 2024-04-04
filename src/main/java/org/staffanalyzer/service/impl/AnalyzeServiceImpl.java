@@ -32,7 +32,7 @@ public class AnalyzeServiceImpl implements AnalyzeService {
     public void buildEmployeesMaps(List<Employee> employees) {
         employeesMap = employees.stream()
                 .collect(Collectors.toMap(Employee::id, identity(), (a, b) -> a));
-        subordinatesMap =  employees.stream()
+        subordinatesMap = employees.stream()
                 .filter(employee -> employee.managerId() != -1)
                 .collect(Collectors.groupingBy(Employee::managerId));
     }
