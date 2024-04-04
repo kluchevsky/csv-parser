@@ -1,4 +1,7 @@
-package org.example;
+package org.staffanalyzer.service.impl;
+
+import org.staffanalyzer.dto.Employee;
+import org.staffanalyzer.service.AnalyzeService;
 
 import java.util.List;
 import java.util.Map;
@@ -7,7 +10,7 @@ import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
 
-class AnalyzeService {
+public class AnalyzeServiceImpl implements AnalyzeService {
     private static final double LOWER_BOUND_MULTIPLIER = 1.2;
     private static final double UPPER_BOUND_MULTIPLIER = 1.5;
     private static final int MAX_REPORTING_LINE = 4;
@@ -18,71 +21,53 @@ class AnalyzeService {
     public static Map<Integer, List<Employee>> subordinatesMap;
     public static Map<Integer, Employee> employeesMap;
 
-    public static void analyzeEmployees(List<Employee> employees) {
+    @Override
+    public void analyzeEmployees(List<Employee> employees) {
         buildEmployeesMaps(employees);
 
         analyzeSalaries();
         analyzeReportingLines(employees);
     }
 
-    public static void buildEmployeesMaps(List<Employee> employees) {
+    public void buildEmployeesMaps(List<Employee> employees) {
         employeesMap = employees.stream()
-                .collect(Collectors.toMap(Employee::getId, identity(), (a, b) -> a));
+                .collect(Collectors.toMap(Employee::id, identity(), (a, b) -> a));
         subordinatesMap =  employees.stream()
-                .filter(employee -> employee.getManagerId() != -1)
-                .collect(Collectors.groupingBy(Employee::getManagerId));
+                .filter(employee -> employee.managerId() != -1)
+                .collect(Collectors.groupingBy(Employee::managerId));
     }
 
-    private static void analyzeSalaries() {
-        subordinatesMap.forEach((k,v) -> {
-                    String result = analyzeSalary(k);
-                    if (result != null) {
-                        System.out.println(result);
-                    }
-        });
-    }
-
-    static String analyzeSalary(Integer id) {
+    public String analyzeSalary(Integer id) {
         Employee manager = employeesMap.get(id);
         List<Employee> employees = subordinatesMap.get(id);
-        double managerSalary = manager.getSalary();
+        double managerSalary = manager.salary();
         double averageSubordinatesSalary = calculateAverageSubordinatesSalary(employees);
         double lowerBound = averageSubordinatesSalary * LOWER_BOUND_MULTIPLIER;
         double upperBound = averageSubordinatesSalary * UPPER_BOUND_MULTIPLIER;
 
         if (managerSalary < lowerBound) {
             return String.format(SALARY_LESS_TEMPLATE,
-                    manager.getFirstName(), manager.getLastName(), lowerBound - managerSalary);
+                    manager.firstName(), manager.lastName(), lowerBound - managerSalary);
         } else if (managerSalary > upperBound) {
             return String.format(SALARY_MORE_TEMPLATE,
-                    manager.getFirstName(), manager.getLastName(), managerSalary - upperBound);
+                    manager.firstName(), manager.lastName(), managerSalary - upperBound);
         }
 
         return null;
     }
 
-    private static double calculateAverageSubordinatesSalary(List<Employee> employees) {
-        if (employees.isEmpty()) {
-            return 0;
-        }
-        return employees.stream()
-                .mapToDouble(Employee::getSalary)
-                .average()
-                .orElse(0);
-    }
-
-    static void analyzeReportingLines(List<Employee> employees) {
+    public void analyzeReportingLines(List<Employee> employees) {
         employees.forEach(emp -> {
             int managerCount = countManagers(emp);
             if (managerCount > MAX_REPORTING_LINE) {
                 System.out.println(String.format(REPORTING_LINE_TEMPLATE,
-                        emp.getFirstName(), emp.getLastName(), managerCount - MAX_REPORTING_LINE));
+                        emp.firstName(), emp.lastName(), managerCount - MAX_REPORTING_LINE));
             }
         });
     }
 
-    static int countManagers(Employee employee) {
-        int managerId = employee.getManagerId();
+    public int countManagers(Employee employee) {
+        int managerId = employee.managerId();
         int count = 0;
 
         while (managerId != -1) {
@@ -93,8 +78,27 @@ class AnalyzeService {
         return count;
     }
 
-    private static int findManager(int id) {
-        return Optional.ofNullable(employeesMap.get(id)).map(Employee::getManagerId).orElse(-1);
+    private void analyzeSalaries() {
+        AnalyzeServiceImpl.subordinatesMap.forEach((k, v) -> {
+            String result = analyzeSalary(k);
+            if (result != null) {
+                System.out.println(result);
+            }
+        });
+    }
+
+    private int findManager(int id) {
+        return Optional.ofNullable(AnalyzeServiceImpl.employeesMap.get(id)).map(Employee::managerId).orElse(-1);
+    }
+
+    private double calculateAverageSubordinatesSalary(List<Employee> employees) {
+        if (employees.isEmpty()) {
+            return 0;
+        }
+        return employees.stream()
+                .mapToDouble(Employee::salary)
+                .average()
+                .orElse(0);
     }
 }
 

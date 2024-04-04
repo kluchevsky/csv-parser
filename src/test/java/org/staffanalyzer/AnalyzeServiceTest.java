@@ -1,6 +1,9 @@
-package org.example;
+package org.staffanalyzer;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.staffanalyzer.dto.Employee;
+import org.staffanalyzer.service.impl.AnalyzeServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +11,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AnalyzeServiceTest {
+
+    AnalyzeServiceImpl service;
+
+    @BeforeEach
+    void setUp() {
+        service = new AnalyzeServiceImpl();
+    }
 
     /**
      * Test analyzing salary when it is less than expected.
@@ -22,10 +32,10 @@ class AnalyzeServiceTest {
         employees.add(new Employee(2, "Alice", "Smith", 105000, 1));
         employees.add(new Employee(3, "Bob", "Jones", 95000, 1));
 
-        AnalyzeService.buildEmployeesMaps(employees);
+        service.buildEmployeesMaps(employees);
 
         // Act
-        String result = AnalyzeService.analyzeSalary(1);
+        String result = service.analyzeSalary(1);
 
         // Assert
         assertNotNull(result);
@@ -45,10 +55,10 @@ class AnalyzeServiceTest {
         employees.add(new Employee(2, "Alice", "Smith", 105000, 1));
         employees.add(new Employee(3, "Bob", "Jones", 95000, 1));
 
-        AnalyzeService.buildEmployeesMaps(employees);
+        service.buildEmployeesMaps(employees);
 
         // Act
-        String result = AnalyzeService.analyzeSalary(1);
+        String result = service.analyzeSalary(1);
 
         // Assert
         assertNotNull(result);
@@ -68,10 +78,10 @@ class AnalyzeServiceTest {
         employees.add(new Employee(2, "Alice", "Smith", 105000, 1));
         employees.add(new Employee(3, "Bob", "Jones", 95000, 1));
 
-        AnalyzeService.buildEmployeesMaps(employees);
+        service.buildEmployeesMaps(employees);
 
         // Act
-        String result = AnalyzeService.analyzeSalary(1);
+        String result = service.analyzeSalary(1);
 
         // Assert
         assertNull(result);
@@ -99,15 +109,14 @@ class AnalyzeServiceTest {
         employees.add(employeeA);
         employees.add(employeeB);
 
-        AnalyzeService.buildEmployeesMaps(employees);
+        service.buildEmployeesMaps(employees);
 
         // Act & Assert
-        assertEquals(0, AnalyzeService.countManagers(ceo));
-        assertEquals(1, AnalyzeService.countManagers(managerA));
-        assertEquals(1, AnalyzeService.countManagers(managerB));
-        assertEquals(2, AnalyzeService.countManagers(managerC));
-        assertEquals(3, AnalyzeService.countManagers(employeeA));
-        assertEquals(3, AnalyzeService.countManagers(employeeB));
+        assertEquals(0, service.countManagers(ceo));
+        assertEquals(1, service.countManagers(managerA));
+        assertEquals(1, service.countManagers(managerB));
+        assertEquals(2, service.countManagers(managerC));
+        assertEquals(3, service.countManagers(employeeA));
+        assertEquals(3, service.countManagers(employeeB));
     }
-
 }

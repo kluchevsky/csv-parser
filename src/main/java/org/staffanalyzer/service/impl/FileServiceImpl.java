@@ -1,4 +1,7 @@
-package org.example;
+package org.staffanalyzer.service.impl;
+
+import org.staffanalyzer.dto.Employee;
+import org.staffanalyzer.service.FileService;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class FileService {
+public class FileServiceImpl implements FileService {
     private static final int ID_INDEX = 0;
     private static final int FIRST_NAME_INDEX = 1;
     private static final int LAST_NAME_INDEX = 2;
@@ -15,7 +18,8 @@ class FileService {
     private static final String DELIMITERS_REGEX = "[;,]";
     public static final String ID_FIELD = "Id";
 
-    public static List<Employee> readDataFromFile(String filename) {
+    @Override
+    public List<Employee> readDataFromFile(String filename) {
         List<Employee> employees = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
